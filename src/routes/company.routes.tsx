@@ -1,11 +1,36 @@
 import { useRoutes } from "react-router-dom";
-import { Dashboard } from "../components/Dashboard";
 import PageLayout from "../components/Layout";
+import { Assets } from "../pages/Assets";
+import { Dashboard } from "../pages/Dashboard";
 
 function CompanyRoutes() {
   const companyRoutes = useRoutes([
     {
       path: "/",
+      element: (
+        <PageLayout>
+          <Dashboard />
+        </PageLayout>
+      ),
+    },
+    {
+      path: "/assets",
+      element: (
+        <PageLayout>
+          <Assets />
+        </PageLayout>
+      ),
+    },
+    {
+      path: "/unities",
+      element: (
+        <PageLayout>
+          <Dashboard />
+        </PageLayout>
+      ),
+    },
+    {
+      path: "/users",
       element: (
         <PageLayout>
           <Dashboard />

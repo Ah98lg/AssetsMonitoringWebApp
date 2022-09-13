@@ -3,26 +3,13 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyles = createGlobalStyle`
 
     :root{
-    --primary: #36393f;
-    --secondary: #2f3136;
-    --tertiary: rgb(32,34,37);
-    --quaternary: #292b2f;
-    --quinary: #393d42;
-    --senary: #828386;
-    --background: #fafafa;
-
     --white: #fff;
     --light-gray: #d6d6d6;
     --gray: #8a8c90;
     --dark-gray: #5C5C5C;
 
-    --notification: #f84a4b;
-    --formError: #D13438;
-    --mention-detail: #F5B649;
-    --whatsapp-color: #00F06E;
+    --error: #D13438;
     --active-green: #03BD70;
-    --active-green-hover: #05ab67;
-    --active-orange: #FF5126;
     }
 
     *{

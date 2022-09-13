@@ -1,13 +1,14 @@
 import { PieChartOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Breadcrumb, Layout, Menu } from "antd";
-import React, { useEffect, useState } from "react";
+import { Layout, Menu } from "antd";
+import React, { useState } from "react";
 import { Container } from "./styles";
 import Logo from "../../assets/favicon.svg";
-import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import { BsFillGearFill, BsFillPersonFill } from "react-icons/bs";
+import { MdStore } from "react-icons/md";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -31,11 +32,13 @@ interface ILayout {
 
 function PageLayout({ children }: ILayout) {
   const [collapsed, setCollapsed] = useState(false);
-  const [containerHeader, setContainerHeader] = useState("Dashboard");
 
   const navigate = useNavigate();
 
-  const items: MenuItem[] = [getItem("Dashboard", "", <PieChartOutlined />)];
+  const items: MenuItem[] = [
+    getItem("Dashboard", "", <PieChartOutlined />),
+    getItem("Máquinas", "assets", <BsFillGearFill />),
+  ];
 
   return (
     <Container>
@@ -61,16 +64,14 @@ function PageLayout({ children }: ILayout) {
             items={items}
             onSelect={(event) => {
               navigate(`/${event.key}`);
-              setContainerHeader(event.key);
             }}
           />
         </Sider>
         <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }} />
-          <Content style={{ margin: "0 16px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
+          <Content style={{ margin: "4.2rem 0 0" }}>
+            {/* <Breadcrumb style={{ margin: "16px 0" }}>
               <Breadcrumb.Item></Breadcrumb.Item>
-            </Breadcrumb>
+            </Breadcrumb> */}
             <div
               className="site-layout-background"
               style={{ padding: 24, minHeight: 360 }}

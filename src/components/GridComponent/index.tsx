@@ -6,9 +6,10 @@ interface IGrid {
   value: number | string;
   footer: string;
   icon: JSX.Element;
+  onClick: () => void;
 }
 
-export function GridComponent({ footer, header, value, icon }: IGrid) {
+export function GridComponent({ onClick, footer, header, value, icon }: IGrid) {
   return (
     <Container>
       <IconDiv>{icon}</IconDiv>
@@ -19,7 +20,7 @@ export function GridComponent({ footer, header, value, icon }: IGrid) {
         <span>{value ?? 0}</span>
       </Value>
       <Separator />
-      <Footer>
+      <Footer onClick={onClick}>
         <span>{footer}</span>
       </Footer>
     </Container>
