@@ -1,4 +1,5 @@
 interface ICompany {
+  _id: string;
   companyName: string;
   companyOwner: string;
   area: string;
@@ -9,6 +10,7 @@ interface ICompany {
 }
 
 interface IUnity {
+  _id: string;
   unityName: string;
   city: string;
   state: string;
@@ -16,12 +18,14 @@ interface IUnity {
 }
 
 interface IUser {
+  _id: string;
   userName: string;
   age: number;
   role: string;
 }
 
 interface IAsset {
+  _id: string;
   assetName: string;
   description: string;
   model: string;

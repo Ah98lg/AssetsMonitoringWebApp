@@ -10,12 +10,17 @@ export const Container = styled.div`
   padding: 1rem;
   border: 1px solid var(--light-gray);
   border-radius: 10px;
+
+  .Labels {
+    width: fit-content;
+  }
 `;
 
 export const Labels = styled.div`
   display: flex;
-  width: 100%;
-  gap: 6rem;
+  width: 730px;
+  align-items: center;
+  justify-content: space-between;
   color: var(--gray);
 `;
 

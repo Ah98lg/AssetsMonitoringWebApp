@@ -1,41 +1,77 @@
 import { Avatar } from "antd";
 import { Actions, Container, Labels, Pair } from "./styles";
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
+import { showToast } from "../../../../components/ShowToast";
+import api from "../../../../services/api";
 
-interface IUnityItem {
-  name: string;
-  city: string;
-  state: string;
-  assetsNumber: number;
+interface ICompanyItem {
+  companyName: string;
+  area: string;
+  cnpj: string;
+  unitiesQuantity: number;
+  usersQuantity: number;
+  company_id: string;
+  handleRender: () => void;
 }
 
-export function CompanyItem({ name, city, state, assetsNumber }: IUnityItem) {
+export function CompanyItem({
+  companyName,
+  cnpj,
+  area,
+  usersQuantity,
+  unitiesQuantity,
+  company_id,
+  handleRender,
+}: ICompanyItem) {
+  async function deleteCompany() {
+    try {
+      await api.delete(`/companies/${company_id}`).then(() => {
+        showToast({
+          type: "success",
+          message: "Exclusão de companhia",
+          description: "A companhia foi excluida com sucesso",
+        });
+      });
+    } catch (error) {
+      showToast({
+        type: "error",
+        message: "Exclusão de companhia",
+        description: "Não foi possivel excluir a companhia selecionada",
+      });
+    } finally {
+      handleRender();
+    }
+  }
   return (
     <Container>
       <Avatar size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }} />
       <div>
         <Labels>
           <Pair>
-            <span>Nome da Unidade</span>
-            <span>{name}</span>
+            <span>Nome da companhia</span>
+            <span>{companyName}</span>
           </Pair>
           <Pair>
-            <span>Cidade alocada</span>
-            <span>{city}</span>
+            <span>Ramo</span>
+            <span>{area}</span>
           </Pair>
           <Pair>
-            <span>Estado</span>
-            <span>{state}</span>
+            <span>CNPJ</span>
+            <span>{cnpj}</span>
           </Pair>
           <Pair>
-            <span>Qtd. de máquinas</span>
-            <span>{assetsNumber}</span>
+            <span>Nº de unidades</span>
+            <span>{unitiesQuantity}</span>
+          </Pair>
+          <Pair>
+            <span>Nº de funcionários</span>
+            <span>{usersQuantity}</span>
           </Pair>
         </Labels>
       </div>
       <Actions>
         <FaEdit color="var(--gray)" />
-        <FaRegTrashAlt color="var(--error)" />
+        <FaRegTrashAlt color="var(--error)" onClick={() => deleteCompany()} />
       </Actions>
     </Container>
   );

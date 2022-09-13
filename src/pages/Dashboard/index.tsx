@@ -7,9 +7,11 @@ import api from "../../services/api";
 import { GridComponent } from "../../components/GridComponent";
 import { showToast } from "../../components/ShowToast";
 import AppModal from "../../components/Modal";
-import { Select } from "antd";
+import { Empty, Select } from "antd";
 import { Options } from "./mocks";
 import { UnityItem } from "./components/UnityItem";
+import { UserItem } from "./components/UserItem";
+import { CompanyItem } from "./components/CompanyItem";
 
 export function Dashboard() {
   const [companies, setCompanies] = useState<ICompany[]>([]);
@@ -158,18 +160,69 @@ export function Dashboard() {
           </Select>
           <Informations>
             {listView === "unidades" ? (
-              unities.map((unity) => {
-                return (
-                  <>
-                    <UnityItem
-                      name={unity.unityName}
-                      city={unity.city}
-                      state={unity.state}
-                      assetsNumber={unity.assets.length}
-                    />
-                  </>
-                );
-              })
+              unities.length !== 0 ? (
+                companies.map((company) => {
+                  return company.unities.map((unity) => {
+                    return (
+                      <>
+                        <UnityItem
+                          company_id={company._id}
+                          unity_id={unity._id}
+                          name={unity.unityName}
+                          city={unity.city}
+                          state={unity.state}
+                          assetsNumber={unity.assets.length}
+                          handleRender={() => getCompanies()}
+                        />
+                      </>
+                    );
+                  });
+                })
+              ) : (
+                <Empty />
+              )
+            ) : listView === "usuários" ? (
+              users.length !== 0 ? (
+                companies.map((company) => {
+                  return company.users.map((user) => {
+                    return (
+                      <>
+                        <UserItem
+                          company_id={company._id}
+                          user_id={user._id}
+                          userName={user.userName}
+                          age={user.age}
+                          role={user.role}
+                          workAt={company.companyName}
+                          handleRender={() => getCompanies()}
+                        />
+                      </>
+                    );
+                  });
+                })
+              ) : (
+                <Empty />
+              )
+            ) : listView === "companhias" ? (
+              companies.length !== 0 ? (
+                companies.map((company) => {
+                  return (
+                    <>
+                      <CompanyItem
+                        handleRender={() => getCompanies()}
+                        companyName={company.companyName}
+                        area={company.area}
+                        cnpj={company.cnpj}
+                        unitiesQuantity={company.unities.length}
+                        usersQuantity={company.users.length}
+                        company_id={company._id}
+                      />
+                    </>
+                  );
+                })
+              ) : (
+                <Empty />
+              )
             ) : (
               <></>
             )}

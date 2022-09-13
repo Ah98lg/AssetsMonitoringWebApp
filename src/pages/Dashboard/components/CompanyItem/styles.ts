@@ -15,7 +15,7 @@ export const Container = styled.div`
 export const Labels = styled.div`
   display: flex;
   width: 100%;
-  gap: 6rem;
+  gap: 4em;
   color: var(--gray);
 `;
 
