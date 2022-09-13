@@ -68,7 +68,7 @@ function PageLayout({ children }: ILayout) {
           />
         </Sider>
         <Layout className="site-layout">
-          <Content style={{ margin: "4.2rem 0 0" }}>
+          <Content style={{ margin: "0" }}>
             {/* <Breadcrumb style={{ margin: "16px 0" }}>
               <Breadcrumb.Item></Breadcrumb.Item>
             </Breadcrumb> */}
