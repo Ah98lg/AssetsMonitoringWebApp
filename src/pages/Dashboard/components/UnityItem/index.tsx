@@ -3,29 +3,31 @@ import { Actions, Container, Labels, Pair } from "./styles";
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 import api from "../../../../services/api";
 import { showToast } from "../../../../components/ShowToast";
+import { useState } from "react";
+import { UnityModal } from "../../../../components/UnityModal";
 
 interface IUnityItem {
-  name: string;
-  city: string;
-  state: string;
-  assetsNumber: number;
-  unity_id: string;
+  unity: IUnity;
   company_id: string;
+  companies: ICompany[];
   handleRender: () => void;
 }
 
 export function UnityItem({
-  name,
-  city,
-  state,
-  assetsNumber,
-  unity_id,
+  unity,
   company_id,
   handleRender,
+  companies,
 }: IUnityItem) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  function toggleModal() {
+    setIsOpen(!isOpen);
+  }
+
   async function deleteUnity() {
     try {
-      await api.delete(`/unities/${company_id}/${unity_id}`).then(() => {
+      await api.delete(`/unities/${company_id}/${unity._id}`).then(() => {
         showToast({
           type: "success",
           message: "Exclusão de unidade",
@@ -44,32 +46,44 @@ export function UnityItem({
   }
 
   return (
-    <Container>
-      <Avatar size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }} />
-      <div>
-        <Labels>
-          <Pair>
-            <span>Nome da Unidade</span>
-            <span>{name}</span>
-          </Pair>
-          <Pair>
-            <span>Cidade alocada</span>
-            <span>{city}</span>
-          </Pair>
-          <Pair>
-            <span>Estado</span>
-            <span>{state}</span>
-          </Pair>
-          <Pair>
-            <span>Qtd. de máquinas</span>
-            <span>{assetsNumber}</span>
-          </Pair>
-        </Labels>
-      </div>
-      <Actions>
-        <FaEdit color="var(--gray)" />
-        <FaRegTrashAlt color="var(--error)" onClick={() => deleteUnity()} />
-      </Actions>
-    </Container>
+    <>
+      <UnityModal
+        toggleModal={toggleModal}
+        onSubmit={handleRender}
+        open={isOpen}
+        isEdit={isOpen}
+        unity={unity}
+        companies={companies}
+        company_id={company_id}
+      />
+
+      <Container>
+        <Avatar size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }} />
+        <div>
+          <Labels>
+            <Pair>
+              <span>Nome da Unidade</span>
+              <span>{unity.unityName}</span>
+            </Pair>
+            <Pair>
+              <span>Cidade alocada</span>
+              <span>{unity.city}</span>
+            </Pair>
+            <Pair>
+              <span>Estado</span>
+              <span>{unity.state}</span>
+            </Pair>
+            <Pair>
+              <span>Qtd. de máquinas</span>
+              <span>{unity.assets.length}</span>
+            </Pair>
+          </Labels>
+        </div>
+        <Actions>
+          <FaEdit color="var(--gray)" onClick={() => toggleModal()} />
+          <FaRegTrashAlt color="var(--error)" onClick={() => deleteUnity()} />
+        </Actions>
+      </Container>
+    </>
   );
 }

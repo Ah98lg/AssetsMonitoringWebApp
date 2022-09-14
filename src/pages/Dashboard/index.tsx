@@ -6,12 +6,15 @@ import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { GridComponent } from "../../components/GridComponent";
 import { showToast } from "../../components/ShowToast";
-import AppModal from "../../components/Modal";
 import { Empty, Select } from "antd";
 import { Options } from "./mocks";
 import { UnityItem } from "./components/UnityItem";
 import { UserItem } from "./components/UserItem";
 import { CompanyItem } from "./components/CompanyItem";
+import { CompanyModal } from "../../components/CompanyModal";
+import { UnityModal } from "../../components/UnityModal";
+import { UserModal } from "../../components/UserModal";
+import { AssetModal } from "../../components/AssetModal";
 
 export function Dashboard() {
   const [companies, setCompanies] = useState<ICompany[]>([]);
@@ -19,14 +22,20 @@ export function Dashboard() {
   const [assets, setAssets] = useState<IAsset[]>([]);
   const [users, setUsers] = useState<IUser[]>([]);
 
-  const [listView, setListView] = useState<string>("unidades");
+  const [listView, setListView] = useState<string>("companhias");
 
-  const [openModal, setOpenModal] = useState(false);
+  const [companyModal, setCompanyModal] = useState(false);
+  const [unityModal, setUnityModal] = useState(false);
+  const [assetsModal, setAssetsModal] = useState(false);
+  const [usersModal, setUsersModal] = useState(false);
 
   const { Option } = Select;
 
-  function toggleModal() {
-    setOpenModal(!openModal);
+  function toggleModal(type: string) {
+    if (type === "companhia") setCompanyModal(!companyModal);
+    else if (type === "unidade") setUnityModal(!unityModal);
+    else if (type === "máquinas") setAssetsModal(!assetsModal);
+    else if (type === "usuários") setUsersModal(!usersModal);
   }
 
   async function getCompanies() {
@@ -88,16 +97,35 @@ export function Dashboard() {
 
   return (
     <>
-      <AppModal
-        title={""}
-        children={undefined}
-        open={openModal}
-        onOk={function (): void {
-          throw new Error("Function not implemented.");
+      <CompanyModal
+        toggleModal={() => toggleModal("companhia")}
+        open={companyModal}
+        onSubmit={getCompanies}
+      />
+      <UnityModal
+        toggleModal={() => toggleModal("unidade")}
+        onSubmit={() => {
+          getCompanies().then(() => getUnities());
         }}
-        isConfirmLoading={false}
-        toggleModal={toggleModal}
-      ></AppModal>
+        open={unityModal}
+        companies={companies}
+      />
+      <UserModal
+        toggleModal={() => toggleModal("usuários")}
+        onSubmit={() => {
+          getCompanies().then(() => getUsers());
+        }}
+        open={usersModal}
+        companies={companies}
+      />
+      <AssetModal
+        toggleModal={() => toggleModal("máquinas")}
+        onSubmit={() => {
+          getCompanies().then(() => getAssets());
+        }}
+        open={assetsModal}
+        companies={companies}
+      />
       <Container>
         <Content>
           <GridComponent
@@ -105,41 +133,35 @@ export function Dashboard() {
             value={companies.length}
             icon={<GiFactory color="#1890ff" size="2.5rem" />}
             footer={"+ Registrar uma nova companhia"}
-            onClick={toggleModal}
+            onClick={() => toggleModal("companhia")}
           />
           <GridComponent
             header={"Total de unidades"}
             value={unities.length}
             icon={<MdStore color="#1890ff" size="5rem" />}
             footer={"+ Registrar uma nova unidade"}
-            onClick={function (): void {
-              throw new Error("Function not implemented.");
-            }}
+            onClick={() => toggleModal("unidade")}
           />
           <GridComponent
             header={"Total de máquinas"}
             value={assets.length}
             icon={<BsFillGearFill color="#1890ff" size="2.5rem" />}
             footer={"+ Cadastrar uma nova máquina"}
-            onClick={function (): void {
-              throw new Error("Function not implemented.");
-            }}
+            onClick={() => toggleModal("máquinas")}
           />
           <GridComponent
             header={"Total de usuários"}
             value={users.length}
             icon={<BsFillPersonFill color="#1890ff" size="4.5rem" />}
             footer={"+ Cadastrar um novo usuário"}
-            onClick={function (): void {
-              throw new Error("Function not implemented.");
-            }}
+            onClick={() => toggleModal("usuários")}
           />
         </Content>
         <ListOfInformations>
           <Select
             showSearch
             style={{ width: 250 }}
-            defaultValue={{ value: "unidades", label: Options[0] }}
+            defaultValue={{ value: "companhias", label: "Companhias" }}
             onSelect={(event: any) => setListView(event)}
             filterOption={(input, option) =>
               (option!.children as unknown as string).includes(input)
@@ -167,11 +189,8 @@ export function Dashboard() {
                       <>
                         <UnityItem
                           company_id={company._id}
-                          unity_id={unity._id}
-                          name={unity.unityName}
-                          city={unity.city}
-                          state={unity.state}
-                          assetsNumber={unity.assets.length}
+                          unity={unity}
+                          companies={companies}
                           handleRender={() => getCompanies()}
                         />
                       </>
@@ -189,12 +208,10 @@ export function Dashboard() {
                       <>
                         <UserItem
                           company_id={company._id}
-                          user_id={user._id}
-                          userName={user.userName}
-                          age={user.age}
-                          role={user.role}
-                          workAt={company.companyName}
+                          user={user}
                           handleRender={() => getCompanies()}
+                          workAt={company.companyName}
+                          companies={companies}
                         />
                       </>
                     );
@@ -210,12 +227,7 @@ export function Dashboard() {
                     <>
                       <CompanyItem
                         handleRender={() => getCompanies()}
-                        companyName={company.companyName}
-                        area={company.area}
-                        cnpj={company.cnpj}
-                        unitiesQuantity={company.unities.length}
-                        usersQuantity={company.users.length}
-                        company_id={company._id}
+                        company={company}
                       />
                     </>
                   );

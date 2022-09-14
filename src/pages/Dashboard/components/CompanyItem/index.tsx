@@ -3,29 +3,24 @@ import { Actions, Container, Labels, Pair } from "./styles";
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 import { showToast } from "../../../../components/ShowToast";
 import api from "../../../../services/api";
+import { CompanyModal } from "../../../../components/CompanyModal";
+import { useState } from "react";
 
 interface ICompanyItem {
-  companyName: string;
-  area: string;
-  cnpj: string;
-  unitiesQuantity: number;
-  usersQuantity: number;
-  company_id: string;
+  company: ICompany;
   handleRender: () => void;
 }
 
-export function CompanyItem({
-  companyName,
-  cnpj,
-  area,
-  usersQuantity,
-  unitiesQuantity,
-  company_id,
-  handleRender,
-}: ICompanyItem) {
+export function CompanyItem({ company, handleRender }: ICompanyItem) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  function toggleModal() {
+    setIsOpen(!isOpen);
+  }
+
   async function deleteCompany() {
     try {
-      await api.delete(`/companies/${company_id}`).then(() => {
+      await api.delete(`/companies/${company._id}`).then(() => {
         showToast({
           type: "success",
           message: "Exclusão de companhia",
@@ -42,37 +37,48 @@ export function CompanyItem({
       handleRender();
     }
   }
+
   return (
-    <Container>
-      <Avatar size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }} />
-      <div>
-        <Labels>
-          <Pair>
-            <span>Nome da companhia</span>
-            <span>{companyName}</span>
-          </Pair>
-          <Pair>
-            <span>Ramo</span>
-            <span>{area}</span>
-          </Pair>
-          <Pair>
-            <span>CNPJ</span>
-            <span>{cnpj}</span>
-          </Pair>
-          <Pair>
-            <span>Nº de unidades</span>
-            <span>{unitiesQuantity}</span>
-          </Pair>
-          <Pair>
-            <span>Nº de funcionários</span>
-            <span>{usersQuantity}</span>
-          </Pair>
-        </Labels>
-      </div>
-      <Actions>
-        <FaEdit color="var(--gray)" />
-        <FaRegTrashAlt color="var(--error)" onClick={() => deleteCompany()} />
-      </Actions>
-    </Container>
+    <>
+      <CompanyModal
+        toggleModal={toggleModal}
+        onSubmit={handleRender}
+        open={isOpen}
+        isEdit={isOpen}
+        company={company}
+      />
+
+      <Container>
+        <Avatar size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }} />
+        <div>
+          <Labels>
+            <Pair>
+              <span>Nome da companhia</span>
+              <span>{company.companyName}</span>
+            </Pair>
+            <Pair>
+              <span>Ramo</span>
+              <span>{company.area}</span>
+            </Pair>
+            <Pair>
+              <span>CNPJ</span>
+              <span>{company.cnpj}</span>
+            </Pair>
+            <Pair>
+              <span>Nº de unidades</span>
+              <span>{company.unities.length}</span>
+            </Pair>
+            <Pair>
+              <span>Nº de funcionários</span>
+              <span>{company.users.length}</span>
+            </Pair>
+          </Labels>
+        </div>
+        <Actions>
+          <FaEdit color="var(--gray)" onClick={() => toggleModal()} />
+          <FaRegTrashAlt color="var(--error)" onClick={() => deleteCompany()} />
+        </Actions>
+      </Container>
+    </>
   );
 }
