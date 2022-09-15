@@ -5,6 +5,7 @@ import api from "../../../../services/api";
 import { showToast } from "../../../../components/ShowToast";
 import { useState } from "react";
 import { UnityModal } from "../../../../components/UnityModal";
+import { GiMechanicGarage } from "react-icons/gi";
 
 interface IUnityItem {
   unity: IUnity;
@@ -58,7 +59,13 @@ export function UnityItem({
       />
 
       <Container>
-        <Avatar size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }} />
+        <Avatar
+          size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }}
+          icon={<GiMechanicGarage size="60%" color="#1890ff" />}
+          style={{
+            background: "#fefefe",
+          }}
+        />
         <div>
           <Labels>
             <Pair>

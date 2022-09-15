@@ -20,6 +20,10 @@ interface IAssetModal {
   onSubmit: () => void;
   open: boolean;
   companies: ICompany[];
+  isEdit?: boolean;
+  asset?: IAsset;
+  company_id?: string;
+  unity_id?: string;
 }
 
 export function AssetModal({
@@ -27,17 +31,36 @@ export function AssetModal({
   open,
   onSubmit,
   companies,
+  isEdit,
+  asset,
+  company_id,
+  unity_id,
 }: IAssetModal) {
   const [formData, setFormData] = useState<IFormData>({
     assetName: "",
     assetOwner: "",
     description: "",
     model: "",
+    status: "Running",
+    healthLevel: 0,
   });
   const [loading, setLoading] = useState(false);
-  const [companyId, setCompanyId] = useState("");
-  const [unityId, setUnityId] = useState("");
+  const [companyId, setCompanyId] = useState(company_id ?? "");
+  const [unityId, setUnityId] = useState(unity_id ?? "");
   const [unities, setUnities] = useState<IUnity[]>([]);
+
+  useEffect(() => {
+    if (isEdit) {
+      setFormData({
+        assetName: asset?.assetName ?? "",
+        assetOwner: asset?.assetOwner ?? "",
+        description: asset?.description ?? "",
+        model: asset?.model ?? "",
+        status: asset?.status ?? "Running",
+        healthLevel: asset?.healthLevel ?? 0,
+      });
+    }
+  }, [isEdit]);
 
   function clearInputs() {
     setFormData({
@@ -48,7 +71,7 @@ export function AssetModal({
     });
   }
 
-  async function createUnity() {
+  async function createAsset() {
     setLoading(true);
     if (
       formData.assetName !== "" &&
@@ -57,26 +80,42 @@ export function AssetModal({
       companyId !== "" &&
       unityId !== ""
     ) {
-      const body: IFormData = {
-        assetName: formData.assetName,
-        assetOwner: formData.assetOwner,
-        description: formData.description,
-        model: formData.model,
-      };
+      const body: IFormData = !isEdit
+        ? {
+            assetName: formData.assetName,
+            assetOwner: formData.assetOwner,
+            description: formData.description,
+            model: formData.model,
+          }
+        : {
+            assetName: formData.assetName,
+            assetOwner: formData.assetOwner,
+            description: formData.description,
+            model: formData.model,
+            healthLevel: formData.healthLevel,
+            status: formData.status,
+          };
 
       try {
-        await api.post(`/assets/${companyId}/${unityId}`, body).then(() => {
+        await (isEdit
+          ? api.patch(`/assets/${company_id}/${unity_id}/${asset?._id}`, body)
+          : api.post(`/assets/${companyId}/${unityId}`, body)
+        ).then(() => {
           showToast({
             type: "success",
-            message: "Cadastro de máquina",
-            description: `O cadastro da máquina ${formData.assetName} foi um sucesso`,
+            message: `${isEdit ? "Edição" : "Cadastro"} de máquina"`,
+            description: `${isEdit ? "A edição" : "O cadastro"} da máquina ${
+              formData.assetName
+            } foi um sucesso`,
           });
         });
       } catch (error) {
         showToast({
           type: "error",
-          message: "Cadastro de máquina",
-          description: `Não foi possivel realizar o cadastro da máquina ${formData.assetName}`,
+          message: `${isEdit ? "Edição" : "Cadastro"} de máquina`,
+          description: `Não foi possivel realizar ${
+            isEdit ? "a edição" : "o cadastro"
+          } da máquina ${formData.assetName}`,
         });
       } finally {
         clearInputs();
@@ -86,7 +125,7 @@ export function AssetModal({
     } else {
       showToast({
         type: "error",
-        message: "Cadastro de máquina",
+        message: `${isEdit ? "Edição" : "Cadastro"} de máquina`,
         description: `Preencha os campos obrigatórios`,
       });
     }
@@ -104,9 +143,9 @@ export function AssetModal({
 
   return (
     <AppModal
-      title={"Registrar nova máquina"}
+      title={`${isEdit ? "Editar máquina" : "Cadastrar nova máquina"}`}
       open={open}
-      onOk={() => createUnity()}
+      onOk={() => createAsset()}
       isConfirmLoading={loading}
       toggleModal={toggleModal}
     >
@@ -117,7 +156,10 @@ export function AssetModal({
           layout="horizontal"
         >
           <Form.Item required label="Companhia">
-            <Select onSelect={(event: any) => setCompanyId(event)}>
+            <Select
+              onSelect={(event: any) => setCompanyId(event)}
+              value={company_id}
+            >
               {companies.map((company) => {
                 return (
                   <Select.Option value={company._id}>
@@ -130,7 +172,8 @@ export function AssetModal({
           <Form.Item required label="Unidade">
             <Select
               onSelect={(event: any) => setUnityId(event)}
-              disabled={companyId === ""}
+              disabled={companyId === "" && !company_id}
+              value={unity_id}
             >
               {unities.map((unity) => {
                 return (
@@ -185,6 +228,44 @@ export function AssetModal({
               }}
             />
           </Form.Item>
+          {isEdit && (
+            <>
+              <Form.Item required label="Status">
+                <Select
+                  value={formData.status}
+                  onSelect={(event: any) => {
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      status: event,
+                    }));
+                  }}
+                >
+                  <Select.Option value={"Running"}>Running</Select.Option>
+                  <Select.Option value={"Alerting"}>Alerting</Select.Option>
+                  <Select.Option value={"Stopped"}>Stopped</Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item required label="Nível de saúde">
+                <Input
+                  type="number"
+                  max={100}
+                  min={0}
+                  value={formData.healthLevel}
+                  onChange={(event) => {
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      healthLevel:
+                        Number(event.target.value) > 100
+                          ? 100
+                          : Number(event.target?.value) < 0
+                          ? 0
+                          : Number(event.target.value),
+                    }));
+                  }}
+                />
+              </Form.Item>
+            </>
+          )}
         </Form>
       </Container>
     </AppModal>

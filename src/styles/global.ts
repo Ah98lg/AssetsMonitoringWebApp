@@ -10,6 +10,7 @@ export const GlobalStyles = createGlobalStyle`
 
     --error: #D13438;
     --active-green: #03BD70;
+    --alert: #ebfa00
     }
 
     *{

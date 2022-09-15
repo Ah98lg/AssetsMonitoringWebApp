@@ -1,6 +1,6 @@
 import { Avatar } from "antd";
 import { Actions, Container, Labels, Pair } from "./styles";
-import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
+import { FaEdit, FaRegTrashAlt, FaUserCog } from "react-icons/fa";
 import api from "../../../../services/api";
 import { showToast } from "../../../../components/ShowToast";
 import { useState } from "react";
@@ -58,7 +58,13 @@ export function UserItem({
         companies={companies}
       />
       <Container>
-        <Avatar size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }} />
+        <Avatar
+          size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }}
+          icon={<FaUserCog size="105%" color="#1890ff" />}
+          style={{
+            background: "#fefefe",
+          }}
+        />
         <div className="Labels">
           <Labels>
             <Pair>

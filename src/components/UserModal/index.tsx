@@ -144,6 +144,7 @@ export function UserModal({
           </Form.Item>
           <Form.Item required label="Idade">
             <Input
+              type="number"
               value={formData.age}
               onChange={(event) => {
                 setFormData((prevState) => ({

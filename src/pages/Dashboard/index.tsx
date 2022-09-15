@@ -20,6 +20,7 @@ export function Dashboard() {
   const [companies, setCompanies] = useState<ICompany[]>([]);
   const [unities, setUnities] = useState<IUnity[]>([]);
   const [assets, setAssets] = useState<IAsset[]>([]);
+  const [assetQuantity, setAssetQuantity] = useState(0);
   const [users, setUsers] = useState<IUser[]>([]);
 
   const [listView, setListView] = useState<string>("companhias");
@@ -29,6 +30,8 @@ export function Dashboard() {
   const [assetsModal, setAssetsModal] = useState(false);
   const [usersModal, setUsersModal] = useState(false);
 
+  const [trigger, setTrigger] = useState(false);
+
   const { Option } = Select;
 
   function toggleModal(type: string) {
@@ -36,6 +39,10 @@ export function Dashboard() {
     else if (type === "unidade") setUnityModal(!unityModal);
     else if (type === "máquinas") setAssetsModal(!assetsModal);
     else if (type === "usuários") setUsersModal(!usersModal);
+  }
+
+  function triggerEffect() {
+    setTrigger(!trigger);
   }
 
   async function getCompanies() {
@@ -67,6 +74,14 @@ export function Dashboard() {
   async function getAssets() {
     try {
       await api.get("/assets").then((response) => {
+        const data = response.data.map((array: any) => {
+          return array.length;
+        });
+        var total = data.reduce(
+          (total: number, numero: number) => total + numero,
+          0
+        );
+        setAssetQuantity(total);
         setAssets(response.data);
       });
     } catch (error) {
@@ -93,36 +108,30 @@ export function Dashboard() {
 
   useEffect(() => {
     Promise.all([getCompanies(), getAssets(), getUsers(), getUnities()]);
-  }, []);
+  }, [trigger]);
 
   return (
     <>
       <CompanyModal
         toggleModal={() => toggleModal("companhia")}
         open={companyModal}
-        onSubmit={getCompanies}
+        onSubmit={triggerEffect}
       />
       <UnityModal
         toggleModal={() => toggleModal("unidade")}
-        onSubmit={() => {
-          getCompanies().then(() => getUnities());
-        }}
+        onSubmit={triggerEffect}
         open={unityModal}
         companies={companies}
       />
       <UserModal
         toggleModal={() => toggleModal("usuários")}
-        onSubmit={() => {
-          getCompanies().then(() => getUsers());
-        }}
+        onSubmit={triggerEffect}
         open={usersModal}
         companies={companies}
       />
       <AssetModal
         toggleModal={() => toggleModal("máquinas")}
-        onSubmit={() => {
-          getCompanies().then(() => getAssets());
-        }}
+        onSubmit={triggerEffect}
         open={assetsModal}
         companies={companies}
       />
@@ -130,28 +139,28 @@ export function Dashboard() {
         <Content>
           <GridComponent
             header={"Total de companhias"}
-            value={companies.length}
+            value={companies.length ?? 0}
             icon={<GiFactory color="#1890ff" size="2.5rem" />}
             footer={"+ Registrar uma nova companhia"}
             onClick={() => toggleModal("companhia")}
           />
           <GridComponent
             header={"Total de unidades"}
-            value={unities.length}
+            value={unities?.length ?? 0}
             icon={<MdStore color="#1890ff" size="5rem" />}
             footer={"+ Registrar uma nova unidade"}
             onClick={() => toggleModal("unidade")}
           />
           <GridComponent
             header={"Total de máquinas"}
-            value={assets.length}
+            value={assetQuantity ?? 0}
             icon={<BsFillGearFill color="#1890ff" size="2.5rem" />}
             footer={"+ Cadastrar uma nova máquina"}
             onClick={() => toggleModal("máquinas")}
           />
           <GridComponent
             header={"Total de usuários"}
-            value={users.length}
+            value={users?.length ?? 0}
             icon={<BsFillPersonFill color="#1890ff" size="4.5rem" />}
             footer={"+ Cadastrar um novo usuário"}
             onClick={() => toggleModal("usuários")}
@@ -191,7 +200,7 @@ export function Dashboard() {
                           company_id={company._id}
                           unity={unity}
                           companies={companies}
-                          handleRender={() => getCompanies()}
+                          handleRender={getCompanies}
                         />
                       </>
                     );

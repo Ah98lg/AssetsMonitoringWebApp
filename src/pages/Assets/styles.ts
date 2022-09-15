@@ -9,3 +9,17 @@ export const Container = styled.div`
     width: fit-content;
   }
 `;
+
+export const EmptyContainer = styled.div`
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const DropdownContent = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+`;

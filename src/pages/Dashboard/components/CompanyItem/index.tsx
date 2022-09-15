@@ -5,6 +5,7 @@ import { showToast } from "../../../../components/ShowToast";
 import api from "../../../../services/api";
 import { CompanyModal } from "../../../../components/CompanyModal";
 import { useState } from "react";
+import { BiBuildingHouse } from "react-icons/bi";
 
 interface ICompanyItem {
   company: ICompany;
@@ -49,7 +50,13 @@ export function CompanyItem({ company, handleRender }: ICompanyItem) {
       />
 
       <Container>
-        <Avatar size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }} />
+        <Avatar
+          size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }}
+          icon={<BiBuildingHouse size="80%" color="#1890ff" />}
+          style={{
+            background: "#fefefe",
+          }}
+        />
         <div>
           <Labels>
             <Pair>

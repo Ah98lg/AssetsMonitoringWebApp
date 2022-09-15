@@ -14,9 +14,8 @@ export const Container = styled.div`
 
 export const Labels = styled.div`
   display: flex;
+  width: 820px;
   justify-content: space-between;
-  width: 800px;
-  gap: 6rem;
   color: var(--gray);
 `;
 
@@ -25,8 +24,13 @@ export const Pair = styled.div`
   position: relative;
   top: -10px;
   flex-direction: column;
+  align-items: center;
   text-align: center;
   gap: 8px;
+
+  .description {
+    width: 22rem;
+  }
 
   span:last-child {
     color: var(--dark-gray);

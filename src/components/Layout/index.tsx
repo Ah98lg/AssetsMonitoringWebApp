@@ -1,10 +1,10 @@
 import { PieChartOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Layout, Menu } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "./styles";
 import Logo from "../../assets/favicon.svg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { BsFillGearFill, BsFillPersonFill } from "react-icons/bs";
 import { MdStore } from "react-icons/md";
 
@@ -32,14 +32,23 @@ interface ILayout {
 
 function PageLayout({ children }: ILayout) {
   const [collapsed, setCollapsed] = useState(false);
+  const [menu, setMenu] = useState("");
 
   const navigate = useNavigate();
+  const params = useParams();
+
+  console.log(params);
 
   const items: MenuItem[] = [
     getItem("Dashboard", "", <PieChartOutlined />),
     getItem("Máquinas", "assets", <BsFillGearFill />),
   ];
 
+  useEffect(() => {
+    if (menu === "") {
+      navigate(`/`);
+    }
+  }, [menu]);
   return (
     <Container>
       <Layout style={{ minHeight: "100vh" }}>
@@ -59,11 +68,12 @@ function PageLayout({ children }: ILayout) {
           </div>
           <Menu
             theme="dark"
-            defaultSelectedKeys={[""]}
             mode="inline"
             items={items}
+            defaultSelectedKeys={[menu]}
             onSelect={(event) => {
               navigate(`/${event.key}`);
+              setMenu(event.key);
             }}
           />
         </Sider>

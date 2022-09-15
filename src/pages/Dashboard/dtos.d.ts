@@ -5,8 +5,8 @@ interface ICompany {
   area: string;
   country: string;
   cnpj: string;
-  unities: [IUnity];
-  users: [IUser];
+  unities: IUnity[];
+  users: IUser[];
 }
 
 interface IUnity {
@@ -14,7 +14,7 @@ interface IUnity {
   unityName: string;
   city: string;
   state: string;
-  assets: [IAsset];
+  assets: IAsset[];
 }
 
 interface IUser {
