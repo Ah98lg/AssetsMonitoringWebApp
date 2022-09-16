@@ -4,9 +4,8 @@ import { Layout, Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import { Container } from "./styles";
 import Logo from "../../assets/favicon.svg";
-import { useNavigate, useParams } from "react-router-dom";
-import { BsFillGearFill, BsFillPersonFill } from "react-icons/bs";
-import { MdStore } from "react-icons/md";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BsFillGearFill } from "react-icons/bs";
 
 const { Content, Footer, Sider } = Layout;
 
@@ -32,12 +31,10 @@ interface ILayout {
 
 function PageLayout({ children }: ILayout) {
   const [collapsed, setCollapsed] = useState(false);
-  const [menu, setMenu] = useState("");
+  const location = useLocation();
+  const [menu, setMenu] = useState(location.pathname);
 
   const navigate = useNavigate();
-  const params = useParams();
-
-  console.log(params);
 
   const items: MenuItem[] = [
     getItem("Dashboard", "", <PieChartOutlined />),
@@ -47,6 +44,10 @@ function PageLayout({ children }: ILayout) {
   useEffect(() => {
     if (menu === "") {
       navigate(`/`);
+      localStorage.clear();
+    }
+    if (menu === "assets") {
+      navigate(`/assets`);
     }
   }, [menu]);
   return (
@@ -70,7 +71,7 @@ function PageLayout({ children }: ILayout) {
             theme="dark"
             mode="inline"
             items={items}
-            defaultSelectedKeys={[menu]}
+            defaultSelectedKeys={[menu.split("/")[1]]}
             onSelect={(event) => {
               navigate(`/${event.key}`);
               setMenu(event.key);

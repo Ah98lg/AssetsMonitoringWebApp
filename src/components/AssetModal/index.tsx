@@ -63,6 +63,8 @@ export function AssetModal({
   }, [isEdit]);
 
   function clearInputs() {
+    setUnityId("");
+    setCompanyId("");
     setFormData({
       assetName: "",
       assetOwner: "",
@@ -157,8 +159,9 @@ export function AssetModal({
         >
           <Form.Item required label="Companhia">
             <Select
+              disabled={isEdit}
               onSelect={(event: any) => setCompanyId(event)}
-              value={company_id}
+              value={companyId}
             >
               {companies.map((company) => {
                 return (
@@ -172,8 +175,8 @@ export function AssetModal({
           <Form.Item required label="Unidade">
             <Select
               onSelect={(event: any) => setUnityId(event)}
-              disabled={companyId === "" && !company_id}
-              value={unity_id}
+              disabled={(companyId === "" && !company_id) || isEdit}
+              value={unityId}
             >
               {unities.map((unity) => {
                 return (

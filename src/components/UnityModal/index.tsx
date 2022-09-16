@@ -82,6 +82,7 @@ export function UnityModal({
               formData.unityName
             } foi um sucesso`,
           });
+          onSubmit();
         });
       } catch (error) {
         showToast({
@@ -94,7 +95,6 @@ export function UnityModal({
       } finally {
         clearInputs();
         toggleModal();
-        onSubmit();
       }
     } else {
       showToast({

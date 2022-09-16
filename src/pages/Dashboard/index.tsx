@@ -200,7 +200,7 @@ export function Dashboard() {
                           company_id={company._id}
                           unity={unity}
                           companies={companies}
-                          handleRender={getCompanies}
+                          handleRender={triggerEffect}
                         />
                       </>
                     );
@@ -218,7 +218,7 @@ export function Dashboard() {
                         <UserItem
                           company_id={company._id}
                           user={user}
-                          handleRender={() => getCompanies()}
+                          handleRender={triggerEffect}
                           workAt={company.companyName}
                           companies={companies}
                         />
@@ -235,7 +235,7 @@ export function Dashboard() {
                   return (
                     <>
                       <CompanyItem
-                        handleRender={() => getCompanies()}
+                        handleRender={triggerEffect}
                         company={company}
                       />
                     </>

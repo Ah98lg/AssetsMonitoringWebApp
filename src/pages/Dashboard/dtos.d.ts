@@ -32,5 +32,4 @@ interface IAsset {
   assetOwner: string;
   status: "Running" | "Alerting" | "Stopped";
   healthLevel: number;
-  image: HTMLImageElement;
 }

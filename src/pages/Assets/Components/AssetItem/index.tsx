@@ -1,11 +1,12 @@
 import { Avatar } from "antd";
 import { Actions, Container, Labels, Pair } from "./styles";
-import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
+import { FaEdit, FaEye, FaRegTrashAlt } from "react-icons/fa";
 import { showToast } from "../../../../components/ShowToast";
 import api from "../../../../services/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AssetModal } from "../../../../components/AssetModal";
 import { GiGears } from "react-icons/gi";
+import { ChartModal } from "../ChartModal";
 
 interface ICompanyItem {
   companyId: string;
@@ -23,9 +24,14 @@ export function AssetItem({
   companies,
 }: ICompanyItem) {
   const [isOpen, setIsOpen] = useState(false);
+  const [openGraphModal, setOpenGraphModal] = useState(false);
 
   function toggleModal() {
     setIsOpen(!isOpen);
+  }
+
+  function toggleGraphModal() {
+    setOpenGraphModal(!openGraphModal);
   }
 
   async function deleteAsset() {
@@ -52,6 +58,13 @@ export function AssetItem({
 
   return (
     <>
+      <ChartModal
+        open={openGraphModal}
+        name={asset.assetName}
+        healthLevel={asset.healthLevel}
+        status={asset.status}
+        toggleModal={toggleGraphModal}
+      />
       <AssetModal
         toggleModal={toggleModal}
         onSubmit={handleRender}
@@ -66,7 +79,20 @@ export function AssetItem({
       <Container>
         <Avatar
           size={{ xs: 10, sm: 18, md: 24, lg: 48, xl: 64, xxl: 84 }}
-          icon={<GiGears size="112%" color="#1890ff" />}
+          icon={
+            <GiGears
+              size="112%"
+              style={{
+                color: `${
+                  asset.status === "Running"
+                    ? "var(--active-green)"
+                    : asset.status === "Stopped"
+                    ? "var(--error)"
+                    : "var(--alert)"
+                }`,
+              }}
+            />
+          }
           style={{
             background: "#fefefe",
             border: `2px solid ${
@@ -103,6 +129,7 @@ export function AssetItem({
           </Labels>
         </div>
         <Actions>
+          <FaEye color="var(--gray)" onClick={() => toggleGraphModal()} />
           <FaEdit color="var(--gray)" onClick={() => toggleModal()} />
           <FaRegTrashAlt color="var(--error)" onClick={() => deleteAsset()} />
         </Actions>
