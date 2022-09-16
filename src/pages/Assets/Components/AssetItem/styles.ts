@@ -10,6 +10,8 @@ export const Container = styled.div`
   padding: 1rem;
   border: 1px solid var(--light-gray);
   border-radius: 10px;
+  background-color: white;
+  z-index: 2;
 `;
 
 export const Labels = styled.div`
