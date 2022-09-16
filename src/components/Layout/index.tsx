@@ -90,9 +90,6 @@ function PageLayout({ children }: ILayout) {
               {children}
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>
-            Assets Monitoring ©2022
-          </Footer>
         </Layout>
       </Layout>
     </Container>
