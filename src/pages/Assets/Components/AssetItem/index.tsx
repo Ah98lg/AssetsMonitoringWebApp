@@ -13,6 +13,7 @@ interface ICompanyItem {
   companies: ICompany[];
   unityId: string;
   asset: IAsset;
+  assetIndex: number;
   handleRender: () => void;
 }
 
@@ -22,6 +23,7 @@ export function AssetItem({
   unityId,
   asset,
   companies,
+  assetIndex,
 }: ICompanyItem) {
   const [isOpen, setIsOpen] = useState(false);
   const [openGraphModal, setOpenGraphModal] = useState(false);
@@ -74,6 +76,7 @@ export function AssetItem({
         asset={asset}
         company_id={companyId}
         unity_id={unityId}
+        assetIndex={assetIndex}
       />
 
       <Container>

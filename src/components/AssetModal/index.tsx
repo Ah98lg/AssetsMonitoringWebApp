@@ -24,6 +24,7 @@ interface IAssetModal {
   asset?: IAsset;
   company_id?: string;
   unity_id?: string;
+  assetIndex?: number;
 }
 
 export function AssetModal({
@@ -35,6 +36,7 @@ export function AssetModal({
   asset,
   company_id,
   unity_id,
+  assetIndex,
 }: IAssetModal) {
   const [formData, setFormData] = useState<IFormData>({
     assetName: "",
@@ -100,7 +102,10 @@ export function AssetModal({
 
       try {
         await (isEdit
-          ? api.patch(`/assets/${company_id}/${unity_id}/${asset?._id}`, body)
+          ? api.patch(
+              `/assets/${company_id}/${unity_id}/${asset?._id}/${assetIndex}`,
+              body
+            )
           : api.post(`/assets/${companyId}/${unityId}`, body)
         ).then(() => {
           showToast({

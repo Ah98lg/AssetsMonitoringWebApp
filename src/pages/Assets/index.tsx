@@ -85,7 +85,7 @@ export function Assets() {
             </Select>
           </DropdownContent>
           {assets.length !== 0 ? (
-            assets.map((asset) => {
+            assets.map((asset, index) => {
               return (
                 <AssetItem
                   companyId={companyId}
@@ -93,6 +93,7 @@ export function Assets() {
                   unityId={selectedUnity}
                   asset={asset}
                   handleRender={() => window.location.reload()}
+                  assetIndex={index}
                 />
               );
             })
