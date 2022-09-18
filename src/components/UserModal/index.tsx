@@ -121,7 +121,10 @@ export function UserModal({
           layout="horizontal"
         >
           <Form.Item required label="Companhia">
-            <Select onSelect={(event: any) => setCompanyId(event)}>
+            <Select
+              onSelect={(event: any) => setCompanyId(event)}
+              value={company_id}
+            >
               {companies.map((company) => {
                 return (
                   <Select.Option value={company._id}>
